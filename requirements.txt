@@ -1,0 +1,6 @@
+requests
+streamlit
+uvicorn
+sqlalchemy
+sqlalchemy.orm
+typing
