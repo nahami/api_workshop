@@ -10,6 +10,10 @@ pip install -r requirements.txt
 4. run app: 
 streamlit run webapp.py 
 
+
+git config --global user.name "My Name"
+git config --global user.email "myemail@example.com"
+
 git remote add origin https://github.com/nahami/api_workshop.git
 git branch -M main
 git push -u origin main
