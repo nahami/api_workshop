@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 
-engine = sa.create_engine("sqlite:///webapp_database.db")
+engine = sa.create_engine("sqlite:///webapp_database.db", echo = True)
 connection = engine.connect()
 
 metadata = sa.MetaData()
