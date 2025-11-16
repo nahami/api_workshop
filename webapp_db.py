@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 
-engine = sa.create_engine("sqlite:///:memory:")
+engine = sa.create_engine("sqlite:///webap_database.db")
 connection = engine.connect()
 
 metadata = sa.MetaData()
@@ -13,7 +13,7 @@ user_table = sa.Table(
     sa.Column("email", sa.String),
 )
 
-
+end="/n"
 def insert_user(username: str, email: str) -> None:
     query = user_table.insert().values(username=username, email=email)
     connection.execute(query)
@@ -29,6 +29,15 @@ def main() -> None:
     metadata.create_all(engine)
     insert_user("Arjan", "Arjan@arjancodes.com")
     print(select_user("Arjan"))
+    connection.commit()
+    connection.close()
+
+
+def main2(naam,email):
+    metadata.create_all(engine)
+    insert_user(naam, email)
+    print(select_user(naam))
+    connection.commit()
     connection.close()
 
 

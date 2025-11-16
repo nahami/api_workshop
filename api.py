@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 app = FastAPI()
-
+from webapp_db import select_user
 from sqlalchemy.orm import Session
 from . import schemas
 from webapp_db import user_table
@@ -20,15 +20,13 @@ def create_item(db: Session, user: schemas.UserCreate):
 
 
 #get all users
-
+@app.get("/getuser")
+def get_users():
+    data = select_user(username='Arjan')
+    return data
 
 #create new user
-@app.post("/add_user/")
-def
+#@app.post("/add_user/")
+
 
 #adjust user username
-
-
-#delete user
-
-
