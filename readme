@@ -13,3 +13,6 @@ streamlit run webapp.py
 git remote add origin https://github.com/nahami/api_workshop.git
 git branch -M main
 git push -u origin main
+
+
+db viewer sqlite: https://sqlitebrowser.org
