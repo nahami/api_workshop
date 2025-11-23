@@ -19,19 +19,20 @@ def insert_user(username: str, email: str) -> None:
     connection.execute(query)
 
 
-def select_user(username: str) -> sa.engine.Result:
+def select_user() -> sa.engine.Result:
     query = user_table.select()
     result = connection.execute(query)
     return result.fetchall()
 
 
+
 def main() -> None:
     metadata.create_all(engine)
-    insert_user("Arjan2", "Arjan@arjancodes.com")
+    insert_user("Nadir123", "Arjan@arjancodes.com")
     print(select_user("Arjan"))
+    print(type(select_user("Arjan")))
     connection.commit()
     connection.close()
-
 
 if __name__ == "__main__":
     main()
