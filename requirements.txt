@@ -4,3 +4,4 @@ uvicorn
 sqlalchemy
 sqlalchemy.orm
 typing
+fastapi

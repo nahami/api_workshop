@@ -1,34 +1,54 @@
 from fastapi import FastAPI
+from webapp_db import select_user
+from webapp_db import *
+import pandas as pd 
+from sqlalchemy import select, update
+
 app = FastAPI()
 
-from sqlalchemy.orm import Session
-from . import schemas
-from webapp_db import user_table
-
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
-
-def get_users(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-def create_item(db: Session, user: schemas.UserCreate):
-    db_item = models.User(name=user.username, description=user.email)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
+engine = sa.create_engine("sqlite:///webapp_database.db", echo = True)
+connection = engine.connect()
 
 #get all users
+@app.get("/getusers")
+def get_users():
+    data = select_user()
+    data_df = pd.DataFrame.from_records(data = data,
+                                    index='user_table__id',
+                                    columns=['user_table__id', 'username','email'])
+    print(data_df[['username','email']])
+    return data_df[['username','email']]
+    # return data_df['username']
+
+#insert new user
+@app.post("/add_user")
+def add_user(username: str, email: str):
+    insert_user(username=username, email=email)
+    connection.commit()
+    connection.close()
+    return "user added" 
+    # return data_df['username']
 
 
-#create new user
-@app.post("/add_user/")
-def
 
-#adjust user username
+#adjust emailadres 
+@app.put("/change_email/{id}")
+def change_email(id: int, new_email: str):
+    result = connection.execute(select(user_table).where(user_table.c.id == id)).fetchone()
+    
+    if not result:
+        return {"error": "User not found"}
 
-
-#delete user
-
+    # Update email
+    upd = (
+        update(user_table)
+        .where(user_table.c.id == id)
+        .values(email=new_email)
+    )
+    connection.execute(upd)
+    connection.commit()
+    # connection.close()
+    return "user email updated" 
+    # return data_df['username']
+# test in http://127.0.0.1:8000/docs#/
 
