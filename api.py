@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 app = FastAPI()
 from webapp_db import select_user
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session 
 from . import schemas
 from webapp_db import user_table
 
