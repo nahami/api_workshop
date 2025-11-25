@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from webapp_db import select_user
 from webapp_db import *
 import pandas as pd 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 app = FastAPI()
 
@@ -20,6 +20,7 @@ def get_users():
     return data_df[['username','email']]
     # return data_df['username']
 
+# test in http://127.0.0.1:8000/docs#/
 #insert new user
 @app.post("/add_user")
 def add_user(username: str, email: str):
@@ -30,10 +31,10 @@ def add_user(username: str, email: str):
     # return data_df['username']
 
 
-
+# test in http://127.0.0.1:8000/docs#/
 #adjust emailadres 
 @app.put("/change_email/{id}")
-def change_email(id: int, new_email: str):
+def change_email(id: int, new_email: str= Query(..., description="Nieuwe e-mail adres")):
     result = connection.execute(select(user_table).where(user_table.c.id == id)).fetchone()
     
     if not result:
@@ -50,5 +51,21 @@ def change_email(id: int, new_email: str):
     # connection.close()
     return "user email updated" 
     # return data_df['username']
+
+# test in http://127.0.0.1:8000/docs#/    
+#delete user 
+@app.delete("/delete_user/{id}")
+def delete_rec(id: int):
+    result = connection.execute(select(user_table).where(user_table.c.id == id)).fetchone()
+    
+    if not result:
+        return {"error": "User not found"}
+
+    # Delete user
+    del_stmt = delete(user_table).where(user_table.c.id == id)
+    connection.execute(del_stmt)
+    connection.commit()
+    return "user deleted"   
+    
 # test in http://127.0.0.1:8000/docs#/
 
