@@ -14,9 +14,11 @@ connection = engine.connect()
 def get_users():
     data = select_user()
     data_df = pd.DataFrame.from_records(data = data,
-                                    index='user_table__id',
-                                    columns=['user_table__id', 'username','email'])
-    print(data_df[['username','email']])
+                                    # index='user_table__id',
+                                    columns=['user_table__id','username','email']
+                                    )
+    # print(data_df[['username','email']])
+    print(data_df)
     return data_df[['username','email']]
     # return data_df['username']
 
