@@ -50,5 +50,21 @@ def change_email(id: int, new_email: str):
     # connection.close()
     return "user email updated" 
     # return data_df['username']
+    
+#delete user
+@app.delete("/delete_user/{id}")
+def delete_user(id: int):
+    result = connection.execute(select(user_table).where(user_table.c.id == id)).fetchone()
+    
+    if not result:
+        return {"error": "User not found"}
+
+    # Delete user
+    del_stmt = user_table.delete().where(user_table.c.id == id)
+    connection.execute(del_stmt)
+    connection.commit()
+    return "user deleted"    
+    
+
 # test in http://127.0.0.1:8000/docs#/
 
