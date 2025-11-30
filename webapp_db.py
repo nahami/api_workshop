@@ -29,8 +29,8 @@ def select_user() -> sa.engine.Result:
 def main() -> None:
     metadata.create_all(engine)
     insert_user("Nadir123", "Arjan@arjancodes.com")
-    print(select_user("Arjan"))
-    print(type(select_user("Arjan")))
+    print(select_user())
+    print(type(select_user()))
     connection.commit()
     connection.close()
 
