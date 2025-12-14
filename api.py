@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from webapp_db import select_user
 from webapp_db import *
 import pandas as pd 
@@ -33,6 +33,24 @@ def add_user(username: str, email: str):
 
 
 
+@app.post("/add_user2")
+async def add_user2(request: Request):
+    data = await request.json()
+
+    username = data.get("username")
+    email = data.get("email")
+
+    if not username or not email:
+        raise HTTPException(status_code=400, detail="username and email are required")
+
+    insert_user(username=username, email=email)
+    connection.commit()
+    connection.close()
+
+    return {"message": "user added"}
+
+
+
 #adjust emailadres 
 @app.put("/change_email/{id}")
 def change_email(id: int, new_email: str):
@@ -54,3 +72,16 @@ def change_email(id: int, new_email: str):
     # return data_df['username']
 # test in http://127.0.0.1:8000/docs#/
 
+#delete user
+@app.delete("/delete_user/{id}")
+def delete_user(id: int):
+    result = connection.execute(select(user_table).where(user_table.c.id == id)).fetchone()
+
+    if not result:
+        return {"error": "User not found"}
+
+    # Delete user
+    del_stmt = user_table.delete().where(user_table.c.id == id)
+    connection.execute(del_stmt)
+    connection.commit()
+    return "user deleted"    
