@@ -22,6 +22,7 @@ def insert_user(username: str, email: str) -> None:
 def select_user() -> sa.engine.Result:
     query = user_table.select()
     result = connection.execute(query)
+    
     return result.fetchall()
 
 

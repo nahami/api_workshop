@@ -7,6 +7,8 @@ Voer de volgende regels uit in de terminal:
     .\.venv\Scripts\Activate
 3. Install the required packages using: 
 pip install -r requirements.txt
+4. run uvicorn:
+uvicorn api:app --reload
 4. run app: 
 streamlit run webapp.py 
 
