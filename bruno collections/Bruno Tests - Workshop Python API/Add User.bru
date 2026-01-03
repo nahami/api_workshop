@@ -1,19 +1,19 @@
 meta {
-  name: add user
+  name: Add User
   type: http
-  seq: 1
+  seq: 5
 }
 
 post {
-  url: http://127.0.0.1:8000/add_user2
+  url: http://127.0.0.1:8000/add-user
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "username": "bodytest",
-    "email": "emailbody"
+    "username":"Ahmet123",
+    "email":"ahmet@test.nl"
   }
 }
 

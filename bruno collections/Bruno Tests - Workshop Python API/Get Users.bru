@@ -1,5 +1,5 @@
 meta {
-  name: get users
+  name: Get Users
   type: http
   seq: 2
 }
@@ -10,10 +10,7 @@ get {
   auth: inherit
 }
 
-headers {
-  accept: application/json
-}
-
 settings {
-  encodeUrl: false
+  encodeUrl: true
+  timeout: 0
 }

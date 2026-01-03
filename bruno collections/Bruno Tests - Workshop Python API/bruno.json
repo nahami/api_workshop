@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "api workshop",
+  "name": "Workshop Python API",
   "type": "collection",
   "ignore": [
     "node_modules",
