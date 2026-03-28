@@ -1,6 +1,8 @@
 API Workshop
 ============
 
+Zie [deployment.md](deployment.md) voor de GitHub Actions workflow en Azure configuratie.
+
 ## Setup
 
 Voer de volgende regels uit in de terminal:
