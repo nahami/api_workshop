@@ -1,0 +1,107 @@
+name: Build & Deploy API
+
+on:
+  push:
+    branches: [main, murat]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.12"
+  AZURE_WEBAPP_NAME: "api-workshop-dev"        # naam van de Azure Web App
+  RESOURCE_GROUP: "rg-api-workshop-dev"        # Azure resource group
+
+jobs:
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STAGE 1 – BUILD & TEST
+# ══════════════════════════════════════════════════════════════════════════════
+  build:
+    name: Build & Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code ophalen
+        uses: actions/checkout@v4
+
+      - name: Python instellen
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Dependencies installeren
+        run: pip install -r requirements.txt
+
+      - name: Unit tests uitvoeren
+        run: pytest test_app.py -v --tb=short
+
+      - name: Artifact voorbereiden (zip)
+        run: |
+          zip -r api-artifact.zip . \
+            --exclude "*.git*" \
+            --exclude ".venv/*" \
+            --exclude "__pycache__/*" \
+            --exclude "robot_tests/results/*" \
+            --exclude "*.pyc" \
+            --exclude "*.db"
+
+      - name: Artifact uploaden
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-package
+          path: api-artifact.zip
+          retention-days: 7
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STAGE 2 – DEPLOY naar Azure Web App (Development)
+# ══════════════════════════════════════════════════════════════════════════════
+  deploy-dev:
+    name: Deploy naar Development
+    runs-on: ubuntu-latest
+    needs: build                               # wacht op succesvolle build
+    environment: development                   # GitHub Environment voor approvals
+
+    steps:
+      - name: Artifact downloaden
+        uses: actions/download-artifact@v4
+        with:
+          name: api-package
+
+      - name: Inloggen bij Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+          # ─────────────────────────────────────────────────────────────────
+          # Maak dit secret aan in GitHub → Settings → Secrets → Actions
+          # Waarde is een JSON object van een Service Principal:
+          #
+          # az ad sp create-for-rbac \
+          #   --name "sp-api-workshop-dev" \
+          #   --role contributor \
+          #   --scopes /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP> \
+          #   --sdk-auth
+          #
+          # Benodigde secrets:
+          #   AZURE_CREDENTIALS_DEV  → volledige JSON output van bovenstaand commando
+          # ─────────────────────────────────────────────────────────────────
+
+      - name: Deployen naar Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: api-artifact.zip
+
+      - name: Startup commando instellen (uvicorn)
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az webapp config set \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name ${{ env.AZURE_WEBAPP_NAME }} \
+              --startup-file "uvicorn app:app --host 0.0.0.0 --port 8000"
+
+      - name: Uitloggen bij Azure
+        if: always()
+        run: az logout
