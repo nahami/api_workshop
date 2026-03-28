@@ -5,3 +5,7 @@ sqlalchemy
 sqlalchemy.orm
 typing
 fastapi
+httpx
+pytest
+robotframework
+robotframework-requests

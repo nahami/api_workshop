@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Virtual environment
+.venv/
+venv/
+
+# Robot Framework resultaten
+robot_tests/results/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# SQLite database
+*.db
+*.sqlite3
+
+# Streamlit cache
+.streamlit/
+
+# VS Code
+.vscode/
+
+# OS bestanden
+.DS_Store
+Thumbs.db
