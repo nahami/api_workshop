@@ -51,7 +51,7 @@ jobs:
         with:
           name: api-package
           path: api-artifact.zip
-          retention-days: 7
+          retention-days: 1
 
 # ══════════════════════════════════════════════════════════════════════════════
 # STAGE 2 – DEPLOY naar Azure Web App (Development)
